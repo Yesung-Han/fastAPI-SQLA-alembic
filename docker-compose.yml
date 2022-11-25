@@ -1,0 +1,51 @@
+version: '3.1'
+
+volumes:
+  mysql_data: {}
+  site_packages: {}
+
+services:
+  mysql:
+    image: mysql:5.6
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=fasttest
+      - MYSQL_USER=fastuser
+      - MYSQL_PASSWORD=password
+    ports:
+      - "3306:3306"
+    expose:
+      - '3306'
+    command: [mysqld, --character-set-server=utf8, --collation-server=utf8_general_ci]
+    healthcheck:
+      test: "mysqladmin -uroot -ppassword ping"
+      interval: 3s
+      timeout: 1s
+      retries: 10
+    networks:
+      - default-network
+
+  fastapi:
+    build:
+      context: .
+      dockerfile: ./compose/fastapi/Dockerfile-dev
+    command: /start-dev.sh
+
+    volumes:
+      - ./fastapi:/fastapi:cached
+      - site_packages:/usr/local/lib/python3.10/site-packages/
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=mysql://fastuser:password@mysql:3306/fasttest
+      - DEPLOYMENT_LEVEL=development
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+
+
+networks:
+  default-network:
+    driver: bridge

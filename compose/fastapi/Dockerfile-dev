@@ -1,0 +1,14 @@
+FROM python:3.10.4-alpine
+
+WORKDIR /fastapi
+
+ENV PYTHONUSERBASE /usr/local/
+ENV PATH ${PYTHONUSERBASE}lib/python3.10/site-packages/bin:${PATH}
+ENV PYTHONUNBUFFERED 0
+
+# RUN pip install Cython
+RUN apk update && apk add bash
+RUN pip install --upgrade pip setuptools
+ADD compose/fastapi/start-dev.sh /start-dev.sh
+
+RUN chmod +x /*.sh
