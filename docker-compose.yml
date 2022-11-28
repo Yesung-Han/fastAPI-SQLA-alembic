@@ -5,8 +5,8 @@ volumes:
   site_packages: {}
 
 services:
-  mysql:
-    image: mysql:5.6
+  db:
+    image: mysql:5.7
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
@@ -18,32 +18,35 @@ services:
       - "3306:3306"
     expose:
       - '3306'
-    command: [mysqld, --character-set-server=utf8, --collation-server=utf8_general_ci]
+    command: [mysqld, --character-set-server=utf8mb4, --collation-server=utf8mb4_general_ci]
     healthcheck:
       test: "mysqladmin -uroot -ppassword ping"
       interval: 3s
       timeout: 1s
       retries: 10
-    networks:
-      - default-network
 
   fastapi:
     build:
       context: .
       dockerfile: ./compose/fastapi/Dockerfile-dev
     command: /start-dev.sh
-
     volumes:
       - ./fastapi:/fastapi:cached
-      - site_packages:/usr/local/lib/python3.10/site-packages/
+      - site_packages:/usr/local/lib/python3.9/site-packages/
     environment:
       - DEBUG=True
-      - DATABASE_URL=mysql://fastuser:password@mysql:3306/fasttest
       - DEPLOYMENT_LEVEL=development
+      - SERVER_NAME=fastapi
+      - SERVER_HOST=fastapi
+      - PROJECT_NAME=fastapi
+      - SQLALCHEMY_DATABASE_URI=mysql+pymysql://root:password@db/fasttest
     ports:
       - "8080:8080"
     depends_on:
-      - mysql
+      db:
+        condition: service_healthy
+    links:
+      - db
 
 
 networks:
