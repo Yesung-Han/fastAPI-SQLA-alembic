@@ -3,7 +3,7 @@ FROM python:3.9-alpine
 WORKDIR /fastapi
 
 ENV PYTHONUSERBASE /usr/local/
-ENV PATH ${PYTHONUSERBASE}lib/python3.10/site-packages/bin:${PATH}
+ENV PATH ${PYTHONUSERBASE}lib/python3.9/site-packages/bin:${PATH}
 ENV PYTHONUNBUFFERED 0
 
 # RUN pip install Cython

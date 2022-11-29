@@ -39,7 +39,13 @@ services:
       - SERVER_NAME=fastapi
       - SERVER_HOST=fastapi
       - PROJECT_NAME=fastapi
-      - SQLALCHEMY_DATABASE_URI=mysql+pymysql://root:password@db/fasttest
+      - SQLALCHEMY_DATABASE_URI=mysql+pymysql://fastuser:password@db/fasttest
+      - DB_USER_NAME=fastuser
+      - DB_PASSWORD=password
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=fasttest
+
     ports:
       - "8080:8080"
     depends_on:

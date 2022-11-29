@@ -28,9 +28,9 @@ def init() -> None:
         raise e
 
 def main() -> None:
-    logger.info("Initializing service")
+    logger.info("⏳ Initializing db service ...")
     init()
-    logger.info("Service finished initializing")
+    logger.info("✅ Initializing db service Done")
 
 if __name__ == "__main__":
     main()
